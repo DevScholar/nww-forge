@@ -1,0 +1,25 @@
+{
+  "name": "@devscholar/nww-forge",
+  "version": "0.0.1",
+  "description": "Build toolchain for node-with-window apps, inspired by Electron Forge",
+  "type": "module",
+  "bin": {
+    "nww-forge": "./bin/nww-forge.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "scripts": {
+    "test": "echo \"no tests yet\""
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "node-with-window",
+    "electron"
+  ],
+  "author": "devscholar",
+  "license": "MIT"
+}
