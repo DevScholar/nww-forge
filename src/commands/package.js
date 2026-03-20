@@ -4,14 +4,17 @@ import { spawnSync } from 'node:child_process';
 import { loadForgeConfig, readPackageJson, resolveMainEntry } from '../utils/forge-config.js';
 import { info, ok, warn, error } from '../utils/log.js';
 
-/** Files/dirs to always exclude when copying the project. */
-const COPY_EXCLUDE = new Set(['node_modules', 'out', 'dist', '.git', '.cache']);
+/** Dirs to always exclude when copying the project (at any depth). */
+const COPY_EXCLUDE_DIRS = new Set(['node_modules', 'out', 'dist', '.git', '.cache']);
+/** File extensions to exclude from copy (compiled away by esbuild). */
+const COPY_EXCLUDE_EXTS = new Set(['.ts', '.tsx']);
 
-/** Copy a directory recursively, skipping excluded names at the top level. */
-function copyDir(src, dest, topLevel = false) {
+/** Copy a directory recursively, skipping excluded dirs/extensions at every level. */
+function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
-    if (topLevel && COPY_EXCLUDE.has(entry.name)) continue;
+    if (entry.isDirectory() && COPY_EXCLUDE_DIRS.has(entry.name)) continue;
+    if (!entry.isDirectory() && COPY_EXCLUDE_EXTS.has(path.extname(entry.name))) continue;
     const s = path.join(src, entry.name);
     const d = path.join(dest, entry.name);
     if (entry.isDirectory()) {
@@ -87,7 +90,7 @@ export default async function packageCmd(args) {
 
   // 1. Copy project source files (excluding node_modules, out, dist, .git)
   info('Copying project files...');
-  copyDir(cwd, outDir, true);
+  copyDir(cwd, outDir);
   ok('Project files copied.');
 
   // 2. Bundle main entry with esbuild (overwrite in output)
