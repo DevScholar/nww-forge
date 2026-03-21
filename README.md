@@ -43,7 +43,7 @@ npm run make       # nww-forge make     →  out/make/<name>-<version>-<platform
 `package` creates a folder bundle containing:
 - Bundled `main.js` (via esbuild)
 - `@devscholar/node-with-window` and its runtime scripts/DLLs
-- `launch.bat` (Windows) / `launch.sh` (Linux) launcher script
+- `start.bat` (Windows) / `start.sh` (Linux) launcher script
 
 `make` runs `package` first, then passes the output through each configured maker.
 The default maker produces a `.zip` archive.
